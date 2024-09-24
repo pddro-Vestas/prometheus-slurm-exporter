@@ -23,7 +23,9 @@ jobs:
         go-version: '1.20'
 
     - name: Build
-      run: go build -v ./...
+      run: |
+        cd prometheus-slurm-exporer
+        make
 
     #- name: Test
     #  run: go test -v ./...
