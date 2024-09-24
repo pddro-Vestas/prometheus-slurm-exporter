@@ -1,0 +1,11 @@
+# .goreleaser.yml
+builds:
+  -
+    goos:
+      - linux
+    goarch:
+      - "amd64"
+
+archives:
+  - id: archive
+    name_template: '{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}'
