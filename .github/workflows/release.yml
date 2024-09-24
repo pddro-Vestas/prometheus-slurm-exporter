@@ -24,7 +24,7 @@ jobs:
 
     - name: Build
       run: |
-        cd prometheus-slurm-exporer
+        ls
         make
 
     #- name: Test
