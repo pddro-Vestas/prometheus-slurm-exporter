@@ -20,8 +20,12 @@ jobs:
         run: |
           docker run --rm -v $(pwd):/app -w /app debian:buster /bin/bash -c "
             apt-get update && \
-            apt-get install -y gcc make git golang-1.20-go && \
-            export PATH=/usr/lib/go-1.20/bin:$PATH && \
+            apt-get install -y wget gcc make git && \
+            wget https://go.dev/dl/go1.20.7.linux-amd64.tar.gz && \
+            tar -C /usr/local -xzf go1.20.7.linux-amd64.tar.gz && \
+            export PATH=/usr/local/go/bin:$PATH && \
+            go version && \
+            cd /app && \
             go mod tidy && \
             go build -o prometheus-slurm-exporter ./main.go
           "
