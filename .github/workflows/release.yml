@@ -15,8 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Use Docker to build the project inside a Debian Buster container
-      - name: Build in Debian Buster (glibc 2.28)
+      # Use Docker to build the project inside a Debian Buster container (glibc 2.28)
+      - name: Build in Debian Buster (glibc 2.28) with go build
         run: |
           docker run --rm -v $(pwd):/app -w /app debian:buster /bin/bash -c "
             apt-get update && \
@@ -27,7 +27,7 @@ jobs:
             go version && \
             cd /app && \
             go mod tidy && \
-            go build -o prometheus-slurm-exporter ./main.go
+            go build -v ./...
           "
 
       # Run GoReleaser to handle the release process
