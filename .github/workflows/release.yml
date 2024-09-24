@@ -7,56 +7,30 @@ on:
   push:
     tags:
       - 'v*'
-  #  branches: [ "master" ]
-  #pull_request:
-  #  branches: [ "master" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.22.1'
+      # Use Docker to build the project inside a Debian Buster container
+      - name: Build in Debian Buster (glibc 2.28)
+        run: |
+          docker run --rm -v $(pwd):/app -w /app debian:buster /bin/bash -c "
+            apt-get update && \
+            apt-get install -y gcc make git golang-1.20-go && \
+            export PATH=/usr/lib/go-1.20/bin:$PATH && \
+            go mod tidy && \
+            go build -o prometheus-slurm-exporter ./main.go
+          "
 
-    - name: Build
-      run: go build -v ./...
-
-    #- name: Test
-    #  run: go test -v ./...
-
-    # - name: Archive production artifacts
-    #   run: tar czvf cgroup_exporter.tar.gz ./cgroup_exporter
-
-    # - name: Create Release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ github.ref }}
-    #     release_name: Release ${{ github.ref }}
-    #     draft: false
-    #     prerelease: false
-
-    # - name: Upload Release Asset
-    #   id: upload-release-asset 
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./cgroup_exporter.tar.gz
-    #     asset_name: cgroup_exporter.tar.gz
-    #     asset_content_type: application/gzip
-
-    - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@master
-      with:
-        version: latest
-        args: release --clean
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Run GoReleaser to handle the release process
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
