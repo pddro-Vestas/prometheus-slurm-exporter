@@ -27,8 +27,13 @@ jobs:
             go version && \
             cd /app && \
             go mod tidy && \
-            go build -v -buildvcs=false ./...
+            go build -v ./... && \
+            rm go1.20.7.linux-amd64.tar.gz  # Clean up after build
           "
+
+      # Add a git clean step before GoReleaser to ensure a clean state
+      - name: Clean up Git State
+        run: git clean -fdX
 
       # Run GoReleaser to handle the release process
       - name: Run GoReleaser
