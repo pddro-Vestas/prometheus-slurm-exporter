@@ -27,7 +27,7 @@ jobs:
             go version && \
             cd /app && \
             go mod tidy && \
-            go build -v ./... && \
+            go build -v -buildvcs=false ./... && \
             rm go1.20.7.linux-amd64.tar.gz  # Clean up after build
           "
 
