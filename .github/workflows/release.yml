@@ -27,7 +27,7 @@ jobs:
             go version && \
             cd /app && \
             go mod tidy && \
-            go build -v ./...
+            go build -v -buildvcs=false ./...
           "
 
       # Run GoReleaser to handle the release process
