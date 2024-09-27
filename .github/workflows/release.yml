@@ -20,9 +20,9 @@ jobs:
         go-version: '1.22.1'
 
     - name: Build
-        run: |
-          export CGO_ENABLED=0 &&
-          go build -v -ldflags '-extldflags "-static"' ./...
+      run: |
+        export CGO_ENABLED=0
+        go build -v -ldflags '-extldflags "-static"' ./...
 
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@master
